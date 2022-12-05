@@ -1,0 +1,9 @@
+echo Connecting to QEMU\n
+
+echo (gdb) set architecture riscv:rv64
+set architecture riscv:rv64
+
+echo (gdb) target remote localhost:1234\n
+target remote localhost:1234
+
+source tools/gdbutil
