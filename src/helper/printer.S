@@ -52,3 +52,20 @@ printu:
     add   sp, sp, 0x10
     ret
 
+
+# simple function that prints a new line
+# to UART
+# input: -
+# clobbers:
+#   t0
+println:
+    add   sp, sp, -0x8
+    li    t0, 0x000a                   # t0 = '\n\0' (const)
+    sh    t0, (sp)
+    mv    a0, sp
+    store_r ra
+    jal   puts
+    load_r ra
+    add   sp, sp, 0x8
+    ret
+
