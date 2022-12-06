@@ -19,6 +19,7 @@ stoi:
     mul   a0, a0, t2            # a0 *= 10
     add   a0, a0, t1            # a0 += t1
     addi  t0, t0, 1             # move index by one
+    j     1b
 
 2:  ret
 
