@@ -68,7 +68,7 @@ $(OBJDUMP_TARGETS): obj-day%: build-day%
 	$(OBJDUMP) -D "$(BUILD)/day$*.elf"
 
 gdb: .gdbsession
-	$(GDB) $(shell cat .gdbsession) -ex "source gdbinit"
+	$(GDB) -q $(shell cat .gdbsession) -ex "source gdbinit"
 
 clean:
 	rm -rf ${BUILD}
