@@ -19,10 +19,10 @@ CFLAGS := -fvisibility=hidden -g $(CFLAGS_RISCV) $(CFLAGS_ASM)  $(INCLUDES)
 GDEPS := $(wildcard src/helper/*.S)
 LDEPS := $(wildcard src/**/*.S)
 
+
 #####################################
 # EMULATOR OPTIONS
 #####################################
-
 
 GDBPORT = 45678
 
@@ -31,6 +31,12 @@ GDB = gdb-multiarch
 
 QEMUOPTS := -nographic -machine sifive_u -bios none
 
+
+#####################################
+# RUN CONFIG
+#####################################
+
+INPUT = none
 
 #####################################
 # MAIN TARGETS
@@ -48,13 +54,14 @@ OBJDUMP_TARGETS = $(foreach e,$(days),obj-$e)
 
 $(BUILD_TARGETS): build-day%: ${BUILD}/day%.elf
 
-$(RUN_TARGETS): run-day%: build-day%
-	$(QEMU) $(QEMUOPTS) -kernel "${BUILD}/day$*.elf"
 
-$(DEBUG_TARGETS): debug-day%: build-day% gdbinit
+$(RUN_TARGETS): run-day%: build-day% build-input-day%
+	$(INCMD) $(QEMU) $(QEMUOPTS) -kernel "${BUILD}/day$*.elf"
+
+$(DEBUG_TARGETS): debug-day%: build-day% gdbinit build-input-day%
 	@echo "> Start gdb in another shell.\n> Stop execution with ctrl-a + x"
 	echo "$(BUILD)/day$*.elf" > .gdbsession
-	$(QEMU) $(QEMUOPTS) -kernel "$(BUILD)/day$*.elf" -S -gdb tcp::$(GDBPORT)
+	$(INCMD) $(QEMU) $(QEMUOPTS) -kernel "$(BUILD)/day$*.elf" -S -gdb tcp::$(GDBPORT)
 	rm .gdbsession
 
 $(OBJDUMP_TARGETS): obj-day%: build-day%
@@ -70,6 +77,14 @@ clean:
 #####################################
 # BUILD RECIPIES
 #####################################
+
+ifneq ($(INPUT), none)
+build-input-%:
+	$(eval INPUT_FILE_NAME = input$(shell [ -n "$(INPUT)" ] && echo "_$(INPUT)"))
+	$(eval INCMD = echo "$$$$(cat src/$*/$(INPUT_FILE_NAME))\04\c" |)
+else
+build-input-%: ;
+endif
 
 gdbinit: tools/dot-gdbinit
 	sed "s/localhost:1234/localhost:$(GDBPORT)/" < $^ > $@
