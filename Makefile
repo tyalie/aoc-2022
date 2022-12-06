@@ -6,15 +6,18 @@
 BUILD = build
 
 CC = riscv64-unknown-elf-gcc
+OBJDUMP = riscv64-unknown-elf-objdump
 
 # includes
 INCLUDES = -Iinclude
 
 # compile parameters
-CFLAGS_RISCV = -march=rv64g -mabi=lp64 -static -mcmodel=medany
-CFLAGS_ASM = -nostdlib -nostartfiles
-CFLAGS := $(CFLAGS_RISCV) $(CFLAGS_ASM) -fvisibility=hidden $(INCLUDES)
+CFLAGS_RISCV = -march=rv64g -mabi=lp64 -mcmodel=medany
+CFLAGS_ASM = -nostdlib -nostartfiles -static -Tinclude/baremetal.ld
+CFLAGS := -fvisibility=hidden -g $(CFLAGS_RISCV) $(CFLAGS_ASM)  $(INCLUDES)
 
+GDEPS := $(wildcard src/helper/*.S)
+LDEPS := $(wildcard src/**/*.S)
 
 #####################################
 # EMULATOR OPTIONS
@@ -38,6 +41,7 @@ days := $(patsubst src/%,%,$(wildcard src/day*))
 BUILD_TARGETS = $(foreach e,$(days),build-$e)
 RUN_TARGETS = $(foreach e,$(days),run-$e)
 DEBUG_TARGETS = $(foreach e,$(days),debug-$e)
+OBJDUMP_TARGETS = $(foreach e,$(days),obj-$e)
 
 
 .PHONY: clean $(BUILD_TARGETS) $(RUN_TARGETS) $(DEBUG_TARGETS)
@@ -49,10 +53,15 @@ $(RUN_TARGETS): run-day%: build-day%
 
 $(DEBUG_TARGETS): debug-day%: build-day% gdbinit
 	@echo "> Start gdb in another shell.\n> Stop execution with ctrl-a + x"
+	echo "$(BUILD)/day$*.elf" > .gdbsession
 	$(QEMU) $(QEMUOPTS) -kernel "$(BUILD)/day$*.elf" -S -gdb tcp::$(GDBPORT)
+	rm .gdbsession
 
-gdb:
-	$(GDB) -ex "source gdbinit"
+$(OBJDUMP_TARGETS): obj-day%: build-day%
+	$(OBJDUMP) -D "$(BUILD)/day$*.elf"
+
+gdb: .gdbsession
+	$(GDB) $(shell cat .gdbsession) -ex "source gdbinit"
 
 clean:
 	rm -rf ${BUILD}
@@ -65,9 +74,9 @@ clean:
 gdbinit: tools/dot-gdbinit
 	sed "s/localhost:1234/localhost:$(GDBPORT)/" < $^ > $@
 
-${BUILD}/day%.elf: src/day%/main.S
+${BUILD}/day%.elf: src/day%/main.S $(LDEPS)
 	mkdir -p "$(BUILD)"
 	@echo "Compiling $@"
-	$(CC) -c $(CPPFLAGS) $(CFLAGS) $^ -o "$@"
+	$(CC) $(CFLAGS) $< -o "$@"
 
 
