@@ -47,3 +47,11 @@ strlen:
 
 
 
+// common strings
+.section .rodata
+startupmsg:
+    .string "hello. I'm an AoC solver. So lets start\n"
+taskmsg1:
+    .string "Task1:"
+taskmsg2:
+    .string "Task2:"

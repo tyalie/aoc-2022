@@ -1,5 +1,4 @@
 .align 2
-.equ UART_REG_TXFIFO,   0
 
 #include "../helper/halt.S"
 #include "task1.S"
@@ -13,7 +12,7 @@ _start:
 
     la    sp, stack_top            // setup sp (stack_top defined in baremetal.ld)
 
-    la    a0, msg                  // load addr of string msg
+    la    a0, startupmsg           // load addr of string msg
     jal   puts                     // print msg contained in a0
 
     // execute ptask 1
@@ -24,9 +23,5 @@ _start:
     jal   println
 
     j     halt                     // go into infinite loop
-
-.section .rodata
-msg:
-    .string "Hello. This is day1\n"
 
 

@@ -65,8 +65,3 @@ ptask1:
     load_r ra
     addi  sp, sp, 0x10
     ret
-
-
-.section .rodata
-taskmsg1:
-    .string "Task1:"

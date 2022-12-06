@@ -107,7 +107,3 @@ inserttopelves:
     j     1b
 
 3:  ret
-
-.section .rodata
-taskmsg2:
-    .string "Task2:"
