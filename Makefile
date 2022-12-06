@@ -81,7 +81,7 @@ clean:
 ifneq ($(INPUT), none)
 build-input-%:
 	$(eval INPUT_FILE_NAME = input$(shell [ -n "$(INPUT)" ] && echo "_$(INPUT)"))
-	$(eval INCMD = echo "$$$$(cat src/$*/$(INPUT_FILE_NAME))\04$$$$(cat src/$*/$(INPUT_FILE_NAME))\04\c" |)
+	$(eval INCMD = echo "$$$$(cat src/$*/$(INPUT_FILE_NAME))\0004$$$$(cat src/$*/$(INPUT_FILE_NAME))\04\c" |)
 else
 build-input-%: ;
 endif
