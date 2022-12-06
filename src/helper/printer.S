@@ -46,7 +46,9 @@ printu:
 
 5:  mv    a0, t0
     li    a1, 16
+    store_r ra
     jal   puts
+    load_r ra
     add   sp, sp, 0x10
     ret
 
