@@ -2,6 +2,7 @@
 
 #include "../helper/halt.S"
 #include "task1.S"
+#include "task2.S"
 
 .section .init
 .globl _start
@@ -17,6 +18,9 @@ _start:
 
     // execute ptask1
     jal   ptask1
+    jal   println
+
+    jal   ptask2
     jal   println
 
     j     halt
