@@ -23,3 +23,25 @@ stoi:
 
 2:  ret
 
+# determine length of given null-terminated string
+# input:
+#   a0: null-terminated string
+# output:
+#   a0: length of string
+# clobbers:
+#   t0, t1
+strlen:
+    mv    t0, a0                # t0 = a0
+    li    a0, 0                 # a0 = 0
+    
+    # count length
+1:  lb    t1, (t0)              # t1 = *t0 (byte)
+    beqz  t1, 3f                # if *t0 == 0, we are at end
+    addi  a0, a0, 1             # counter++
+    addi  t0, t0, 1             # position++
+    j     1b
+
+3:  ret
+
+
+
