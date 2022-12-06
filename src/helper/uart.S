@@ -44,7 +44,7 @@ gets:
 
 2:  lw    t2, UART_REG_RXFIFO(t0)      # load state of rx fifo
     bltz  t2, 2b                       # if t2 negative, there is no data
-    sw    t2, (t1)                     # write byte t2 into memory addr of t1
+    sb    t2, (t1)                     # write byte t2 into memory addr of t1
     addi  t1, t1, 1
     j     1b
 
