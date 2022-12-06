@@ -1,5 +1,4 @@
-#ifndef SRC_UART
-#define SRC_UART
+#pragma once
 
 .include "cfg.inc"
 .equ UART_REG_TXFIFO,  0x0
@@ -52,4 +51,3 @@ gets:
 3:  sw    zero, (t1)
     ret
 
-#endif

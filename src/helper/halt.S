@@ -1,8 +1,6 @@
-#ifndef SRC_HALT
-#define SRC_HALT
+#pragma once
 
 .section .text
 
 halt:
     j  halt
-#endif
