@@ -3,6 +3,7 @@
 
 #include "../helper/halt.S"
 #include "task1.S"
+#include "task2.S"
 
 .section .init
 .globl _start
@@ -16,10 +17,13 @@ _start:
     jal   puts                     # print msg contained in a0
 
     # execute ptask 1
-1:  jal   ptask1
+    jal   ptask1
     jal   println
 
-    j     1b                     # go into infinite loop
+    jal   ptask2
+    jal   println
+
+    j     halt                     # go into infinite loop
 
 .section .rodata
 msg:
