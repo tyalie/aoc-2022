@@ -4,6 +4,7 @@
 #include "../helper/halt.S"
 #include "../helper/strings.S"
 #include "../helper/task_load.S"
+#include "../helper/printer.S"
 #include "../helper/stack.S"
 
 .section .init
@@ -16,6 +17,9 @@ _start:
 
     la    a0, msg                  # load addr of string msg
     jal   puts                     # print msg contained in a0
+
+    li    a0, 123456
+    jal   printu
 
     addi  sp, sp, -0x8
 1:  mv    a0, sp
